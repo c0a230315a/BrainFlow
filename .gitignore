@@ -1,1 +1,3 @@
 python-portable/
+data/
+__pycache__/
