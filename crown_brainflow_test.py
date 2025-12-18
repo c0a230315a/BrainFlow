@@ -9,17 +9,25 @@ from brainflow.data_filter import DataFilter
 
 def main() -> None:
     # Experiment name (used in folder / file names)
-    experiment_name = "test1"
+    experiment_name = "mochizuki-all-no"
 
     liar_enabled = False
     liar_timestamp = None  # epoch seconds when "l" was pressed
+    true_enabled = False
+    true_timestamp = None  # epoch seconds when "t" was pressed
 
-    # Callback when "l" key is pressed
+    # Callback when "l" key is pressedls
     def mark_liar() -> None:
         nonlocal liar_enabled, liar_timestamp
         liar_enabled = True
         liar_timestamp = time.time()
         print(f'[liar] "l" pressed, liar_timestamp = {liar_timestamp}')
+
+    def mark_true() -> None:
+        nonlocal true_enabled, true_timestamp
+        true_enabled = True
+        true_timestamp = time.time()
+        print(f'[true] "t" pressed, true_timestamp = {true_timestamp}')
 
     # Enable detailed logging (useful for debugging connection issues)
     BoardShim.enable_dev_board_logger()
@@ -44,9 +52,12 @@ def main() -> None:
         print("=== Streaming started ===")
         print('  "l" : set liar_timestamp')
         print('  "s" : stop and save data')
+        print('  "t" : set true_timestamp')
 
         # Register "l" hotkey to mark liar_timestamp
         keyboard.add_hotkey("l", mark_liar)
+        # Register "t" hotkey to mark true_timestamp
+        keyboard.add_hotkey("t", mark_true)
 
         # Wait until "s" is pressed
         keyboard.wait("s")
@@ -81,7 +92,9 @@ def main() -> None:
             "created_at": now,
             "crown_filename": crown_filename,
             "liar_enabled": liar_enabled,
+            "true_enabled": true_enabled,
             "liar_timestamp": liar_timestamp,
+            "true_timestamp": true_timestamp,
         }
 
         # Save JSON
